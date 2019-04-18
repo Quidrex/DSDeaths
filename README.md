@@ -6,8 +6,15 @@ This is a Dark Souls death counter. It keeps reading your current death count fr
 
 Side Note: The death count is not reset when you defeat Gwyn and enter NG+.
 
-## How do I run it?
+## Which games does it support?
 
-Syntax: `DSDeaths.exe <Prefix> <Filename>`
+ * DARK SOULS: Prepare To Die Edition
+ * DARK SOULS II: Scholar of the First Sin
+ * DARK SOULS III
+ * DARK SOULS: REMASTERED
 
-For example executing `DSDeaths.exe "Deaths: " "%USERPROFILE%\ds.txt"` will write "Deaths: 779" to the file `ds.txt` in your User folder when you die for the 779th time. The easiest way to run it is to create a shortcut and append the arguments to the field "Target".
+ Note that only the current patch as of the time of release works. Please open a ticket if there is a new patch and it stops functioning.
+
+## How do I use it?
+
+Just double click it. It writes the current death count into `DSDeaths.txt` in the current directory. I died 779 times in my first playthrough of the original Dark Souls.
