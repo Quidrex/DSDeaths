@@ -90,7 +90,7 @@ namespace DSDeaths
         static bool Peek3(IntPtr handle, IntPtr baseAddress, ref int value)
         {
             long address = 0;
-            if (GetLong(handle, (IntPtr)(baseAddress.ToInt64() + 0x4704268), ref address) && address != 0)
+            if (GetLong(handle, (IntPtr)(baseAddress.ToInt64() + 0x4740178), ref address) && address != 0)
                 if (GetInt(handle, (IntPtr)(address + 0x98), ref value))
                     return true;
             return false;
