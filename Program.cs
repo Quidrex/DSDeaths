@@ -105,9 +105,20 @@ namespace DSDeaths
             return false;
         }
 
+        static bool PeekSekiro(IntPtr handle, IntPtr baseAddress, ref int value)
+        {
+            long address = 0;
+            if (GetLong(handle, (IntPtr)(baseAddress.ToInt64() + 0x3D7A1E0), ref address) && address != 0)
+                if (GetLong(handle, (IntPtr)(address + 0x88), ref address) && address != 0)
+                    if (GetLong(handle, (IntPtr)(address + 0x2000), ref address) && address != 0)
+                        if (GetInt(handle, (IntPtr)(address + 0xDC), ref value))
+                            return true;
+            return false;
+        }
+
         static void Main(string[] args)
         {
-            Process[] proc1, proc2, proc3, procRemastered;
+            Process[] proc1, proc2, proc3, procRemastered, procSekiro;
 
             Console.CancelKeyPress += delegate {
                 Write(0);
@@ -125,7 +136,8 @@ namespace DSDeaths
                     proc2 = Process.GetProcessesByName("DarkSoulsII");
                     proc3 = Process.GetProcessesByName("DarkSoulsIII");
                     procRemastered = Process.GetProcessesByName("DarkSoulsRemastered");
-                    if (proc1.Length != 0 || proc2.Length != 0 || proc3.Length != 0 || procRemastered.Length != 0)
+                    procSekiro = Process.GetProcessesByName("Sekiro");
+                    if (proc1.Length != 0 || proc2.Length != 0 || proc3.Length != 0 || procRemastered.Length != 0 || procSekiro.Length != 0)
                         break;
                     Thread.Sleep(500);
                 }
@@ -151,11 +163,17 @@ namespace DSDeaths
                     proc = proc3[0];
                     peek = Peek3;
                 }
-                else
+                else if (procRemastered.Length != 0)
                 {
                     Console.WriteLine("Found Dark Souls Remastered!");
                     proc = procRemastered[0];
                     peek = PeekRemastered;
+                }
+                else
+                {
+                    Console.WriteLine("Found Sekiro!");
+                    proc = procSekiro[0];
+                    peek = PeekSekiro;
                 }
 
                 IntPtr handle = OpenProcess(PROCESS_WM_READ, false, proc.Id);
@@ -174,6 +192,7 @@ namespace DSDeaths
                     }
                     else if (proc.HasExited)
                     {
+                        Thread.Sleep(2000);
                         break;
                     }
                     Thread.Sleep(500);
