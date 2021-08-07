@@ -108,10 +108,8 @@ namespace DSDeaths
         static bool PeekSekiro(IntPtr handle, IntPtr baseAddress, ref int value)
         {
             long address = 0;
-            if (GetLong(handle, (IntPtr)(baseAddress.ToInt64() + 0x3D7A1E0), ref address) && address != 0)
-                if (GetLong(handle, (IntPtr)(address + 0x88), ref address) && address != 0)
-                    if (GetLong(handle, (IntPtr)(address + 0x2000), ref address) && address != 0)
-                        if (GetInt(handle, (IntPtr)(address + 0xDC), ref value))
+            if (GetLong(handle, (IntPtr)(baseAddress.ToInt64() + 0x3D5AAC0), ref address) && address != 0)
+                        if (GetInt(handle, (IntPtr)(address + 0x90), ref value))
                             return true;
             return false;
         }
