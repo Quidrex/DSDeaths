@@ -111,6 +111,7 @@ namespace DSDeaths {
                     }
                 }
                 Console.WriteLine("Process has exited.");
+                Thread.Sleep(2000);
             }
         }
     }
