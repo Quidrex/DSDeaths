@@ -34,7 +34,7 @@ namespace DSDeaths {
             new Game("DarkSoulsII", new int[] {0x160B8D0, 0xD0, 0x490, 0x104}),
             new Game("DarkSoulsIII", new int[] {0x4740178, 0x98}),
             new Game("DarkSoulsRemastered", new int[] {0x1D278F0, 0x98}),
-            new Game("Sekiro", new int[] {0x3D7A1E0, 0x88, 0x2000, 0xDC})
+            new Game("Sekiro", new int[] {0x3D5AAC0, 0x90})
         };
 
         static bool Write(int value) {
