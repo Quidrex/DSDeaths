@@ -12,6 +12,7 @@ Side Note: The death count is not reset when you defeat Gwyn and enter NG+.
  * DARK SOULS II: Scholar of the First Sin
  * DARK SOULS III
  * DARK SOULS: REMASTERED
+ * Sekiro: Shadows Die Twice
 
  Note that only the current patch as of the time of release works. Please open a ticket if there is a new patch and it stops functioning.
 
