@@ -34,7 +34,8 @@ namespace DSDeaths {
             new Game("DarkSoulsII", new int[] {0x160B8D0, 0xD0, 0x490, 0x104}),
             new Game("DarkSoulsIII", new int[] {0x4740178, 0x98}),
             new Game("DarkSoulsRemastered", new int[] {0x1D278F0, 0x98}),
-            new Game("Sekiro", new int[] {0x3D5AAC0, 0x90})
+            new Game("Sekiro", new int[] {0x3D5AAC0, 0x90}),
+            new Game("eldenring", new int[] {0x3C481D8, 0x94})
         };
 
         static bool Write(int value) {
@@ -85,9 +86,15 @@ namespace DSDeaths {
                 Write(0);
             };
 
+            Console.WriteLine("-----------------------------------WARNING-----------------------------------");
+            Console.WriteLine(" Does NOT work with Elden Ring if Easy Anti-Cheat (EAC) is running.");
+            Console.WriteLine(" Possible risk of BANS by trying to use with EAC enabled or disabling EAC.");
+            Console.WriteLine(" USE AT YOUR OWN RISK.");
+            Console.WriteLine("-----------------------------------WARNING-----------------------------------");
+            Console.WriteLine();
+
             while (true) {
                 Write(0);
-
                 Console.WriteLine("Looking for Dark Souls process...");
 
                 Process proc = null;
