@@ -1,24 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-
+using System.Web.Script.Serialization;
 
 namespace DSDeaths {
-    class Game {
-        public readonly string name;
-        public readonly int[] offset;
-        public readonly bool longType;
 
-        public Game(in string name, in int[] offset, bool longType=true) {
-            this.name = name;
-            this.offset = offset;
-            this.longType = longType;
-        }
+    public class Game {
+        public string process { get; set; }
+        public int[] offsets { get; set; }
+        public bool isWow64 { get; set; } // true = game is a 32-bit process and runs in 64-bit emulation
     }
 
     class Program {
+
         const int PROCESS_WM_READ = 0x0010;
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -28,19 +25,17 @@ namespace DSDeaths {
         static extern bool ReadProcessMemory(
             IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesRead);
 
-        static readonly Game[] games =
-        {
-            new Game("DARKSOULS", new int[] {0xF78700, 0x5c}, false),
-            new Game("DarkSoulsII", new int[] {0x160B8D0, 0xD0, 0x490, 0x104}),
-            new Game("DarkSoulsIII", new int[] {0x47572B8, 0x98}),
-            new Game("DarkSoulsRemastered", new int[] {0x1C8A530, 0x98}),
-            new Game("Sekiro", new int[] {0x3D5AAC0, 0x90}),
-            new Game("eldenring", new int[] {0x3C17EE8, 0x94})
-        };
+        [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool IsWow64Process(
+            [In] IntPtr hProcess,
+            [Out] out bool wow64Process
+        );
 
-        static bool Write(int value) {
+        static bool WriteDeaths(in string template, in string formatToken, in int deaths) {
             try {
-                File.WriteAllText("DSDeaths.txt", value.ToString());
+                string s = template.Replace(formatToken, deaths.ToString());
+                File.WriteAllText("deaths.txt", s);
             } catch (IOException) {
                 return false;
             }
@@ -52,14 +47,14 @@ namespace DSDeaths {
             byte[] buffer = new byte[8];
             int discard = 0;
 
-            foreach (int offset in game.offset) {
+            foreach (int offset in game.offsets) {
                 address += offset;
 
                 if (!ReadProcessMemory(handle, (IntPtr)address, buffer, 8, ref discard)) {
                     return false;
                 }
 
-                address = game.longType ? BitConverter.ToInt64(buffer, 0) : BitConverter.ToInt32(buffer, 0);
+                address = game.isWow64 ? BitConverter.ToInt32(buffer, 0) : BitConverter.ToInt64(buffer, 0);
                 if (address == 0) {
                     return false;
                 }
@@ -68,11 +63,19 @@ namespace DSDeaths {
             return true;
         }
 
-        static bool ScanProcesses(ref Process proc, ref Game game) {
-            foreach (Game g in games) {
-                Process[] process = Process.GetProcessesByName(g.name);
+        static bool ScanProcesses(in Dictionary<string, Game> games, ref Process proc, ref Game game) {
+            foreach (var kv in games) {
+                Game g = kv.Value;
+                Process[] process = Process.GetProcessesByName(g.process);
                 if (process.Length != 0) {
-                    Console.WriteLine("Found: " + g.name);
+                    IsWow64Process(process[0].Handle, out bool isWow64);
+                    // used to differtiate between regular ds2 and sotfs ds2
+                    if (isWow64 != g.isWow64)
+                    {
+                        continue;
+                    }
+
+                    Print("Found: " + kv.Key);
                     proc = process[0];
                     game = g;
                     return true;
@@ -81,26 +84,87 @@ namespace DSDeaths {
             return false;
         }
 
+        static void Print(in string msg)
+        {
+            string time = DateTime.Now.ToString("t");
+            Console.WriteLine(time + " " + msg);
+        }
+
         static void Main() {
-            Console.CancelKeyPress += delegate {
-                Write(0);
-            };
+
+            const string configPath = "config.json";
+            const string templatePath = "template.txt";
+            const string templateFormatToken = "$deaths";
+            string template = "";
 
             Console.WriteLine("-----------------------------------WARNING-----------------------------------");
             Console.WriteLine(" Does NOT work with Elden Ring if Easy Anti-Cheat (EAC) is running.");
             Console.WriteLine(" Possible risk of BANS by trying to use with EAC enabled or disabling EAC.");
             Console.WriteLine(" USE AT YOUR OWN RISK.");
-            Console.WriteLine("-----------------------------------WARNING-----------------------------------");
-            Console.WriteLine();
+            Console.WriteLine("-----------------------------------WARNING-----------------------------------\n");
+            Console.WriteLine("DSDeaths - https://github.com/Quidrex/DSDeaths");
+            Console.WriteLine("INFO: Use the template.txt file to define a custom text.");
+            Console.WriteLine("      " + templateFormatToken + " will be replaced with the actual deaths.\n");
+
+
+            // try to load the game configs
+            string json;
+            if (File.Exists(configPath))
+            {
+                // file found
+                json = File.ReadAllText(configPath);
+            }
+            else
+            {
+                // file not found, create default config file
+                json = Config.json;
+                Print(configPath + " created");
+                File.WriteAllText(configPath, json);
+            }
+
+            // convert the json to an c# object
+            JavaScriptSerializer jss = new JavaScriptSerializer();
+            Dictionary<string, Game> games;
+            try
+            {
+               games = jss.Deserialize<Dictionary<string, Game>>(json);
+            }
+            catch(Exception)
+            {
+                Print("Could not load " + configPath + ". Using default config.");
+                games = jss.Deserialize<Dictionary<string, Game>>(Config.json);
+            }
+
+            // try to load the template text
+            if (File.Exists(templatePath))
+            {
+                // file found
+                template = File.ReadAllText(templatePath);
+            }
+            else
+            {
+                // file not found, create empty template text file
+                Print(templatePath + " created.");
+                File.Create(templatePath).Dispose();
+            }
+
+            // template file is empty, use no template text
+            if (string.IsNullOrEmpty(template)){
+                template = templateFormatToken;
+            }
+
+            Console.CancelKeyPress += delegate {
+                WriteDeaths(template, templateFormatToken, 0);
+            };
 
             while (true) {
-                Write(0);
-                Console.WriteLine("Looking for Dark Souls process...");
+                WriteDeaths(template, templateFormatToken, 0);
+                Print("Waiting for the game to start...");
 
                 Process proc = null;
                 Game game = null;
 
-                while (!ScanProcesses(ref proc, ref game)) {
+                while (!ScanProcesses(games, ref proc, ref game)) {
                     Thread.Sleep(500);
                 }
 
@@ -112,12 +176,12 @@ namespace DSDeaths {
                     if (PeekMemory(handle, baseAddress, game, ref value)) {
                         if (value != oldValue) {
                             oldValue = value;
-                            Write(value);
+                            WriteDeaths(template, templateFormatToken, value); ;
                         }
                         Thread.Sleep(500);
                     }
                 }
-                Console.WriteLine("Process has exited.");
+                Print("Game was closed.\n");
                 Thread.Sleep(2000);
             }
         }
