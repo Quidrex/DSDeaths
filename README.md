@@ -8,6 +8,7 @@ The death count is not reset when you enter NG+.
 ## Which games are supported?
 
  * DARK SOULS: Prepare To Die Edition
+ * DARK SOULS II
  * DARK SOULS II: Scholar of the First Sin
  * DARK SOULS III
  * DARK SOULS: REMASTERED
