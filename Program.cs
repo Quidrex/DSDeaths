@@ -66,6 +66,7 @@ namespace DSDeaths {
                 address += offset;
 
                 if (!ReadProcessMemory(handle, (IntPtr)address, buffer, 8, ref discard)) {
+                    Console.WriteLine("Could not read game memory.");
                     return false;
                 }
 
@@ -129,9 +130,8 @@ namespace DSDeaths {
                                 oldValue = value;
                                 Write(value);
                             }
-
-                            Thread.Sleep(500);
                         }
+                        Thread.Sleep(500);
                     }
                 }
 
