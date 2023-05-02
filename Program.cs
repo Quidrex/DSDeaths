@@ -97,6 +97,9 @@ namespace DSDeaths {
                 Write(0);
             };
 
+            // put DSDeaths.txt in the same directory as the exe
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+
             Console.WriteLine("-----------------------------------WARNING-----------------------------------");
             Console.WriteLine(" Does NOT work with Elden Ring if Easy Anti-Cheat (EAC) is running.");
             Console.WriteLine(" Possible risk of BANS by trying to use with EAC enabled.");
