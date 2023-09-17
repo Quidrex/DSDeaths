@@ -1,0 +1,27 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DSDeaths.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="FileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">DSDeaths.txt</Value>
+    </Setting>
+    <Setting Name="FilePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SammiUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://localhost:9450/api</Value>
+    </Setting>
+    <Setting Name="SammiPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="EnableSammi" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="SammiButtonID" Type="System.String" Scope="User">
+      <Value Profile="(Default)">963741-DSDeath</Value>
+    </Setting>
+    <Setting Name="SammiVariableName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">DSDeathCount</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
