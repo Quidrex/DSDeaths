@@ -128,6 +128,7 @@ namespace DSDeaths {
                         if (PeekMemory(handle, baseAddress, !isWow64, offsets, ref value)) {
                             if (value != oldValue) {
                                 oldValue = value;
+                                Console.WriteLine("Deaths: " + value.ToString());
                                 Write(value);
                             }
                         }
