@@ -45,7 +45,6 @@ namespace DSDeaths {
         static bool Write(int value) {
             try {
                 File.WriteAllText("DSDeaths.txt", value.ToString());
-                Console.WriteLine("Deaths: " + value.ToString());
             } catch (IOException) {
                 Console.WriteLine("Could not write to DSDeaths.txt.");
                 return false;
