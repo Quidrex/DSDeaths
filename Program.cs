@@ -59,7 +59,6 @@ namespace DSDeaths {
 
             foreach (int offset in offsets) {
                 if (address == 0) {
-                    //Console.WriteLine("Encountered null pointer.");
                     return false;
                 }
 
@@ -132,6 +131,7 @@ namespace DSDeaths {
                             if (value != oldValue) {
                                 oldValue = value;
                                 Write(value);
+                                Console.WriteLine("Deaths: " + value.ToString());
                             }
                         }
                         Thread.Sleep(500);

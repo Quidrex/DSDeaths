@@ -13,13 +13,13 @@ The death count is not reset when you enter NG+.
  * DARK SOULS III
  * DARK SOULS: REMASTERED
  * Sekiro: Shadows Die Twice
- * (Elden Ring)
+ * Elden Ring (offline, disable EAC)
 
  Note that only the current patch as of the time of release works. Please open a ticket if there is a new patch and it stops working.
 
 ## Elden Ring support
 
-Elden Ring uses Easy Anti-Cheat to detect and deny trying to read from the process memory. If you are willing to disable EAC and are willing to risk a ban over it, you can use this program with Elden Ring AT YOUR OWN RISK. Methods to disable EAC can be found using your favorite search engine.
+Elden Ring uses Easy Anti-Cheat to detect and deny trying to read from the process memory. Use your favorite search engine to find out how to disable EAC to play offline.
 
 ## How do I use it?
 
